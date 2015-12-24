@@ -29,7 +29,7 @@ new: [
 ]
 
 diff: [
-  [ type: 'create-table' ]
+  [ type: 'recreate-table' ]
 ]
 
 postgres: '''
