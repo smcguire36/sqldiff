@@ -43,6 +43,6 @@ const sqlite = new sqldiff.Sqlite(differ);
 console.log(sqlite.generate());
 
 // ALTER TABLE `users` ADD COLUMN `description` TEXT;
-// ALTER TABLE "users" ADD COLUMN `age` INTEGER;
-// ALTER TABLE "users" ADD COLUMN `height` REAL;
+// ALTER TABLE `users` ADD COLUMN `age` INTEGER;
+// ALTER TABLE `users` ADD COLUMN `height` REAL;
 ```
