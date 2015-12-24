@@ -1,0 +1,34 @@
+{
+  "name": "sqldiff",
+  "version": "0.0.1",
+  "description": "Generate SQL table schema diffs",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fulcrumapp/sqldiff.git"
+  },
+  "scripts": {
+    "test": "npm run lint && node_modules/.bin/mocha ./test/setup.js test/test.js",
+    "prepublish": "npm run lint && npm run clean && npm run build",
+    "lint": "node_modules/.bin/eslint src",
+    "build": "node_modules/.bin/babel src --out-dir dist --source-maps",
+    "clean": "rm -rf dist"
+  },
+  "author": "Zac McCormick <zac.mccormick@gmail.com> (http://github.com/zhm)",
+  "license": "BSD",
+  "dependencies": {
+    "underscore": "^1.7.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.3.17",
+    "babel-core": "^6.3.26",
+    "babel-preset-es2015-node5": "^1.1.1",
+    "babel-preset-stage-3": "^6.3.13",
+    "chai": "^3.4.1",
+    "cson": "^3.0.2",
+    "glob": "^6.0.2",
+    "mocha": "^2.1.0",
+    "should": "^4.4.2",
+    "source-map-support": "^0.4.0"
+  }
+}
