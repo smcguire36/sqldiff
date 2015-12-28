@@ -11,10 +11,11 @@ var _column2 = _interopRequireDefault(_column);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class Table {
-  constructor(id, name) {
+  constructor(id, name, options) {
     this.id = id;
     this.name = name || id;
     this.columns = [];
+    this.options = options || {};
   }
 
   addColumn(opts) {
@@ -36,7 +37,7 @@ class Table {
       throw new Error('must provide id, name, type parameters');
     }
 
-    const column = new _column2.default({ id: opts.id, name: opts.name, type: opts.type, allowNull: opts.allowNull });
+    const column = new _column2.default(opts);
 
     this.columns.push(column);
 
