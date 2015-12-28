@@ -1,10 +1,11 @@
 import Column from './column';
 
 export default class Table {
-  constructor(id, name) {
+  constructor(id, name, options) {
     this.id = id;
     this.name = name || id;
     this.columns = [];
+    this.options = options || {};
   }
 
   addColumn(opts) {
@@ -26,7 +27,7 @@ export default class Table {
       throw new Error('must provide id, name, type parameters');
     }
 
-    const column = new Column({id: opts.id, name: opts.name, type: opts.type, allowNull: opts.allowNull});
+    const column = new Column(opts);
 
     this.columns.push(column);
 
