@@ -5,12 +5,21 @@ export default class Table {
     this.id = id;
     this.name = name || id;
     this.columns = [];
+    this.indexes = [];
 
     options = options || {};
 
     for (const key of Object.keys(options)) {
       this[key] = options[key];
     }
+  }
+
+  addIndex(opts) {
+    if (opts.columns) {
+      throw new Error('must provide column parameter');
+    }
+
+    this.indexes.push(opts);
   }
 
   addColumn(opts) {

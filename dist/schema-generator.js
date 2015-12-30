@@ -124,6 +124,8 @@ var SchemaGenerator = (function () {
         }
       }
 
+      this.processIndexes(changes);
+
       if (this.options.afterTransform) {
         this.options.afterTransform(this, changes);
       }
@@ -393,6 +395,61 @@ var SchemaGenerator = (function () {
       return (0, _util.format)('CREATE INDEX %s ON %s (%s);', this.indexName(change.newTable, change.columns), this.tableName(change.newTable), change.columns.map(function (c) {
         return _this2.escape(c);
       }).join(', '));
+    }
+  }, {
+    key: 'processIndexes',
+    value: function processIndexes(changes) {
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
+
+      try {
+        for (var _iterator5 = changes[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var change = _step5.value;
+
+          if (_underscore2.default.contains(['create-table', 'recreate-table'], change.type)) {
+            var _iteratorNormalCompletion6 = true;
+            var _didIteratorError6 = false;
+            var _iteratorError6 = undefined;
+
+            try {
+              for (var _iterator6 = change.newTable.indexes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                var index = _step6.value;
+
+                changes.push(new _schemaChange2.default('create-index', { newTable: change.newTable,
+                  columns: index.columns,
+                  type: index.type }));
+              }
+            } catch (err) {
+              _didIteratorError6 = true;
+              _iteratorError6 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                  _iterator6.return();
+                }
+              } finally {
+                if (_didIteratorError6) {
+                  throw _iteratorError6;
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion5 && _iterator5.return) {
+            _iterator5.return();
+          }
+        } finally {
+          if (_didIteratorError5) {
+            throw _iteratorError5;
+          }
+        }
+      }
     }
   }]);
 

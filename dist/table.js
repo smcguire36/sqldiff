@@ -21,6 +21,7 @@ var Table = (function () {
     this.id = id;
     this.name = name || id;
     this.columns = [];
+    this.indexes = [];
 
     options = options || {};
 
@@ -51,6 +52,15 @@ var Table = (function () {
   }
 
   _createClass(Table, [{
+    key: 'addIndex',
+    value: function addIndex(opts) {
+      if (opts.columns) {
+        throw new Error('must provide column parameter');
+      }
+
+      this.indexes.push(opts);
+    }
+  }, {
     key: 'addColumn',
     value: function addColumn(opts) {
       if (opts.id == null) {

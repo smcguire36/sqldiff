@@ -59,6 +59,8 @@ export default class SchemaGenerator {
       }
     }
 
+    this.processIndexes(changes);
+
     if (this.options.afterTransform) {
       this.options.afterTransform(this, changes);
     }
@@ -275,5 +277,17 @@ export default class SchemaGenerator {
                this.indexName(change.newTable, change.columns),
                this.tableName(change.newTable),
                change.columns.map(c => this.escape(c)).join(', '));
+  }
+
+  processIndexes(changes) {
+    for (const change of changes) {
+      if (_.contains(['create-table', 'recreate-table'], change.type)) {
+        for (const index of change.newTable.indexes) {
+          changes.push(new SchemaChange('create-index', {newTable: change.newTable,
+                                                         columns: index.columns,
+                                                         type: index.type}));
+        }
+      }
+    }
   }
 }
