@@ -16,10 +16,10 @@ diff: [
 ]
 
 postgres: '''
-CREATE TABLE "organization_1"."users" ("id" bigserial NOT NULL, "geom" geometry(Geometry, 4326));
+CREATE TABLE "organization_1"."users" IF NOT EXISTS ("id" bigserial NOT NULL, "geom" geometry(Geometry, 4326));
 '''
 
 # SQLite stores geometries as text currently, perhaps a SpatiaLite dialect could do more
 sqlite: '''
-CREATE TABLE `account_1_users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `geom` TEXT);
+CREATE TABLE `account_1_users` IF NOT EXISTS (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `geom` TEXT);
 '''

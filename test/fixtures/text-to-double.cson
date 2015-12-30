@@ -24,7 +24,7 @@ diff: [
 ]
 
 postgres: '''
-CREATE TABLE "organization_1"."tmp_new_users" ("id" bigserial NOT NULL, "name" text, "desc" text, "height" float);
+CREATE TABLE "organization_1"."tmp_new_users" IF NOT EXISTS ("id" bigserial NOT NULL, "name" text, "desc" text, "height" float);
 INSERT INTO "organization_1"."tmp_new_users" ("id", "name", "desc", "height") SELECT "id", "name", "desc", convert_to_float("height") FROM "organization_1"."users";
 ALTER TABLE "organization_1"."users" RENAME TO "tmp_old_users";
 ALTER TABLE "organization_1"."tmp_new_users" RENAME TO "users";
@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS "organization_1"."tmp_old_users" CASCADE;
 '''
 
 sqlite: '''
-CREATE TABLE `account_1_tmp_new_users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `desc` TEXT, `height` REAL);
+CREATE TABLE `account_1_tmp_new_users` IF NOT EXISTS (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `desc` TEXT, `height` REAL);
 INSERT INTO `account_1_tmp_new_users` (`id`, `name`, `desc`, `height`) SELECT `id`, `name`, `desc`, (CASE WHEN LENGTH(TRIM(`height`)) = 0 THEN NULL WHEN CAST(`height` AS REAL) = 0 AND LENGTH(TRIM(REPLACE(REPLACE(REPLACE(`height`, '.', ''), '0', ' '), '-', ''))) > 0 THEN NULL ELSE CAST(`height` AS REAL) END) FROM `account_1_users`;
 ALTER TABLE `account_1_users` RENAME TO `account_1_tmp_old_users`;
 ALTER TABLE `account_1_tmp_new_users` RENAME TO `account_1_users`;
