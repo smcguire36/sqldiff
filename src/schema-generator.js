@@ -20,7 +20,7 @@ export default class SchemaGenerator {
     const changes = [];
 
     if (this.options.beforeTransform) {
-      this.options.beforeTransform(changes);
+      this.options.beforeTransform(this, changes);
     }
 
     const columnRenamesAndDrops = _.select(this.changes, function (change) {
@@ -60,7 +60,7 @@ export default class SchemaGenerator {
     }
 
     if (this.options.afterTransform) {
-      this.options.afterTransform(changes);
+      this.options.afterTransform(this, changes);
     }
 
     return changes;
@@ -86,6 +86,8 @@ export default class SchemaGenerator {
         return this.createView(change);
       case 'create-index':
         return this.createIndex(change);
+      case 'raw':
+        return this.raw(change);
       default:
         throw new Error('Invalid change type ' + change.type);
     }
@@ -117,28 +119,14 @@ export default class SchemaGenerator {
     });
   }
 
-  projectionForView(table) {
-    const definitions = [];
-    const columnNames = {};
+  projectionForView(view) {
+    const parts = [];
 
-    for (const column of table.columns) {
-      let alias = column.name.substring(0, 63);
-
-      if (this.options.viewColumnName) {
-        alias = this.options.viewColumnName(table, column);
-      }
-
-      if (alias == null) {
-        continue;
-      }
-
-      if (!columnNames[alias]) {
-        definitions.push(fmt('%s AS %s', this.escape(column.name), this.escape(alias)));
-        columnNames[alias] = column;
-      }
+    for (const reference of view.columns) {
+      parts.push(fmt('%s AS %s', this.escape(reference.column.name), this.escape(reference.alias)));
     }
 
-    return definitions;
+    return parts;
   }
 
   mappingForTables(oldTable, newTable) {
@@ -172,6 +160,10 @@ export default class SchemaGenerator {
     return fmt('CREATE TABLE %s (%s);',
                this.tableName(change.newTable),
                this.columnsForTable(change.newTable).join(', '));
+  }
+
+  raw(change) {
+    return change.sql;
   }
 
   recreateTable(change) {
@@ -259,8 +251,8 @@ export default class SchemaGenerator {
     return this.escapedSchema() + this.escape(this.tablePrefix + table.name);
   }
 
-  viewName(table) {
-    return this.escapedSchema() + this.escape(this.tablePrefix + table.name + '_view');
+  viewName(view) {
+    return this.escapedSchema() + this.escape(this.tablePrefix + view.table.name + '_view');
   }
 
   indexName(table, columns) {
@@ -268,14 +260,14 @@ export default class SchemaGenerator {
   }
 
   dropView(change) {
-    return fmt('DROP VIEW IF EXISTS %s;', this.viewName(change.oldTable));
+    return fmt('DROP VIEW IF EXISTS %s;', this.viewName(change.oldView));
   }
 
   createView(change) {
     return fmt('CREATE VIEW IF NOT EXISTS %s AS SELECT %s FROM %s;',
-               this.viewName(change.newTable),
-               this.projectionForView(change.newTable),
-               this.tableName(change.newTable));
+               this.viewName(change.newView),
+               this.projectionForView(change.newView),
+               this.tableName(change.newView.table));
   }
 
   createIndex(change) {

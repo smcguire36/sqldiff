@@ -8,6 +8,7 @@ const TYPES = {
   date: 'REAL',
   double: 'REAL',
   array: 'TEXT',
+  boolean: 'INTEGER',
   timestamp: 'REAL'
 };
 
