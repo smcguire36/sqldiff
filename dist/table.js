@@ -15,7 +15,12 @@ class Table {
     this.id = id;
     this.name = name || id;
     this.columns = [];
-    this.options = options || {};
+
+    options = options || {};
+
+    for (const key of Object.keys(options)) {
+      this[key] = options[key];
+    }
   }
 
   addColumn(opts) {

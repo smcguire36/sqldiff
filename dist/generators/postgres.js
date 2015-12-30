@@ -38,6 +38,7 @@ const TYPES = {
   timestamp: 'timestamp without time zone',
   geometry: 'geometry(Geometry, 4326)',
   array: 'text[]',
+  boolean: 'boolean',
   fts: 'tsvector'
 };
 
@@ -70,11 +71,11 @@ class Postgres extends _schemaGenerator2.default {
   }
 
   createView(change) {
-    const viewName = this.viewName(change.newTable);
-    const viewDefinition = this.projectionForView(change.newTable);
-    const tableName = this.tableName(change.newTable);
+    const viewName = this.viewName(change.newView);
+    const viewDefinition = this.projectionForView(change.newView);
+    const tableName = this.tableName(change.newView.table);
 
-    return (0, _util.format)('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s;', viewName, viewDefinition, tableName);
+    return (0, _util.format)('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s;', viewName, viewDefinition.join(', '), tableName);
   }
 }
 exports.default = Postgres;

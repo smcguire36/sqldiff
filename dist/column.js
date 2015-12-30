@@ -9,6 +9,10 @@ class Column {
     this.name = options.name;
     this.type = options.type;
     this.allowNull = !!options.allowNull;
+
+    for (const key of Object.keys(options)) {
+      this[key] = options[key];
+    }
   }
 
   isEqualTo(column) {
