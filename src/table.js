@@ -15,8 +15,8 @@ export default class Table {
   }
 
   addIndex(opts) {
-    if (opts.columns) {
-      throw new Error('must provide column parameter');
+    if (!opts.columns) {
+      throw new Error('must provide columns parameter');
     }
 
     this.indexes.push(opts);

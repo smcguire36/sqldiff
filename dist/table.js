@@ -54,8 +54,8 @@ var Table = (function () {
   _createClass(Table, [{
     key: 'addIndex',
     value: function addIndex(opts) {
-      if (opts.columns) {
-        throw new Error('must provide column parameter');
+      if (!opts.columns) {
+        throw new Error('must provide columns parameter');
       }
 
       this.indexes.push(opts);
