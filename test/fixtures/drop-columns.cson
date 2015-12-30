@@ -24,7 +24,7 @@ diff: [
 ]
 
 postgres: '''
-CREATE TABLE "organization_1"."tmp_new_users" IF NOT EXISTS ("id" bigserial NOT NULL, "name" text, "age" float);
+CREATE TABLE IF NOT EXISTS "organization_1"."tmp_new_users" ("id" bigserial NOT NULL, "name" text, "age" float);
 INSERT INTO "organization_1"."tmp_new_users" ("id", "name", "age") SELECT "id", "name", "age" FROM "organization_1"."users";
 ALTER TABLE "organization_1"."users" RENAME TO "tmp_old_users";
 ALTER TABLE "organization_1"."tmp_new_users" RENAME TO "users";
@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS "organization_1"."tmp_old_users" CASCADE;
 '''
 
 sqlite: '''
-CREATE TABLE `account_1_tmp_new_users` IF NOT EXISTS (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `age` REAL);
+CREATE TABLE IF NOT EXISTS `account_1_tmp_new_users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `age` REAL);
 INSERT INTO `account_1_tmp_new_users` (`id`, `name`, `age`) SELECT `id`, `name`, `age` FROM `account_1_users`;
 ALTER TABLE `account_1_users` RENAME TO `account_1_tmp_old_users`;
 ALTER TABLE `account_1_tmp_new_users` RENAME TO `account_1_users`;

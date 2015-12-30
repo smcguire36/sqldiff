@@ -157,7 +157,7 @@ export default class SchemaGenerator {
   }
 
   createTable(change) {
-    return fmt('CREATE TABLE %s IF NOT EXISTS (%s);',
+    return fmt('CREATE TABLE IF NOT EXISTS %s (%s);',
                this.tableName(change.newTable),
                this.columnsForTable(change.newTable).join(', '));
   }
