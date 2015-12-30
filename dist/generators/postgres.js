@@ -81,13 +81,13 @@ var Postgres = (function (_SchemaGenerator) {
   }, {
     key: 'createIndex',
     value: function createIndex(change) {
-      var type = change.type || 'btree';
+      var method = change.method || 'btree';
       var indexName = this.indexName(change.newTable, change.columns);
       var tableName = this.tableName(change.newTable);
       var columns = change.columns.join(', ');
       var unique = change.unique ? 'UNIQUE ' : '';
 
-      return (0, _util.format)('CREATE %sINDEX CONCURRENTLY %s ON %s USING %s (%s);', unique, indexName, tableName, type, columns);
+      return (0, _util.format)('CREATE %sINDEX CONCURRENTLY %s ON %s USING %s (%s);', unique, indexName, tableName, method, columns);
     }
   }, {
     key: 'dropTable',

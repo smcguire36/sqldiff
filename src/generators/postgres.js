@@ -47,14 +47,14 @@ export default class Postgres extends SchemaGenerator {
   }
 
   createIndex(change) {
-    const type = change.type || 'btree';
+    const method = change.method || 'btree';
     const indexName = this.indexName(change.newTable, change.columns);
     const tableName = this.tableName(change.newTable);
     const columns = change.columns.join(', ');
     const unique = change.unique ? 'UNIQUE ' : '';
 
     return fmt('CREATE %sINDEX CONCURRENTLY %s ON %s USING %s (%s);',
-               unique, indexName, tableName, type, columns);
+               unique, indexName, tableName, method, columns);
   }
 
   dropTable(change) {
