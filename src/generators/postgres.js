@@ -53,7 +53,7 @@ export default class Postgres extends SchemaGenerator {
     const columns = change.columns.join(', ');
     const unique = change.unique ? 'UNIQUE ' : '';
 
-    return fmt('CREATE %sINDEX CONCURRENTLY %s ON %s USING %s (%s);',
+    return fmt('CREATE %sINDEX %s ON %s USING %s (%s);',
                unique, indexName, tableName, method, columns);
   }
 

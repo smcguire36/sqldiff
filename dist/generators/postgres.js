@@ -87,7 +87,7 @@ var Postgres = (function (_SchemaGenerator) {
       var columns = change.columns.join(', ');
       var unique = change.unique ? 'UNIQUE ' : '';
 
-      return (0, _util.format)('CREATE %sINDEX CONCURRENTLY %s ON %s USING %s (%s);', unique, indexName, tableName, method, columns);
+      return (0, _util.format)('CREATE %sINDEX %s ON %s USING %s (%s);', unique, indexName, tableName, method, columns);
     }
   }, {
     key: 'dropTable',
