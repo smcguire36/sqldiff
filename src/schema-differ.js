@@ -121,7 +121,7 @@ export default class SchemaDiff {
         let oldView = null;
 
         if (this.oldSchema) {
-          oldView = _.find(this.oldSchema.tables, (t) => t.id === newView.id);
+          oldView = _.find(this.oldSchema.views, (t) => t.id === newView.id);
         }
 
         return { oldView: oldView, newView: newView };
