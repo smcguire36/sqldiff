@@ -418,7 +418,8 @@ var SchemaGenerator = (function () {
 
                 changes.push(new _schemaChange2.default('create-index', { newTable: change.newTable,
                   columns: index.columns,
-                  type: index.type }));
+                  type: index.type,
+                  unique: !!index.unique }));
               }
             } catch (err) {
               _didIteratorError6 = true;

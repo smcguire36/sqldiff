@@ -32,7 +32,10 @@ export default class Sqlite extends SchemaGenerator {
   }
 
   createIndex(change) {
-    return fmt('CREATE INDEX IF NOT EXISTS %s ON %s (%s);',
+    const unique = change.unique ? 'UNIQUE ' : '';
+
+    return fmt('CREATE %sINDEX IF NOT EXISTS %s ON %s (%s);',
+               unique,
                this.indexName(change.newTable, change.columns),
                this.tableName(change.newTable),
                change.columns.join(', '));

@@ -285,7 +285,8 @@ export default class SchemaGenerator {
         for (const index of change.newTable.indexes) {
           changes.push(new SchemaChange('create-index', {newTable: change.newTable,
                                                          columns: index.columns,
-                                                         type: index.type}));
+                                                         type: index.type,
+                                                         unique: !!index.unique}));
         }
       }
     }

@@ -58,7 +58,9 @@ var Sqlite = (function (_SchemaGenerator) {
   }, {
     key: 'createIndex',
     value: function createIndex(change) {
-      return (0, _util.format)('CREATE INDEX IF NOT EXISTS %s ON %s (%s);', this.indexName(change.newTable, change.columns), this.tableName(change.newTable), change.columns.join(', '));
+      var unique = change.unique ? 'UNIQUE ' : '';
+
+      return (0, _util.format)('CREATE %sINDEX IF NOT EXISTS %s ON %s (%s);', unique, this.indexName(change.newTable, change.columns), this.tableName(change.newTable), change.columns.join(', '));
     }
   }, {
     key: 'escape',
