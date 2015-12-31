@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -46,13 +46,9 @@ var View = (function () {
   }
 
   _createClass(View, [{
-    key: 'addColumn',
+    key: "addColumn",
     value: function addColumn(opts) {
-      if (!opts.alias || !opts.column) {
-        throw new Error('must provide alias');
-      }
-
-      this.columns.push({ column: opts.column, alias: opts.alias });
+      this.columns.push({ column: opts.column, alias: opts.alias, raw: opts.raw });
 
       return this;
     }

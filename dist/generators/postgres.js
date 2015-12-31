@@ -98,10 +98,11 @@ var Postgres = (function (_SchemaGenerator) {
     key: 'createView',
     value: function createView(change) {
       var viewName = this.viewName(change.newView);
-      var viewDefinition = this.projectionForView(change.newView);
       var tableName = this.tableName(change.newView.table);
+      var viewDefinition = this.projectionForView(change.newView);
+      var clause = change.newView.clause ? ' ' + change.newView.clause : '';
 
-      return (0, _util.format)('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s;', viewName, viewDefinition.join(', '), tableName);
+      return (0, _util.format)('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s%s;', viewName, viewDefinition.join(', '), tableName, clause);
     }
   }]);
 

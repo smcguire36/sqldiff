@@ -204,7 +204,11 @@ var SchemaGenerator = (function () {
         for (var _iterator3 = view.columns[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
           var reference = _step3.value;
 
-          parts.push((0, _util.format)('%s AS %s', this.escape(reference.column.name), this.escape(reference.alias)));
+          if (reference.raw) {
+            parts.push(reference.raw);
+          } else {
+            parts.push((0, _util.format)('%s AS %s', this.escape(reference.column.name), this.escape(reference.alias)));
+          }
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -370,7 +374,7 @@ var SchemaGenerator = (function () {
   }, {
     key: 'viewName',
     value: function viewName(view) {
-      return this.escapedSchema() + this.escape(this.tablePrefix + view.table.name + '_view');
+      return this.escapedSchema() + this.escape(this.tablePrefix + view.name);
     }
   }, {
     key: 'indexName',
@@ -385,7 +389,7 @@ var SchemaGenerator = (function () {
   }, {
     key: 'createView',
     value: function createView(change) {
-      return (0, _util.format)('CREATE VIEW IF NOT EXISTS %s AS SELECT %s FROM %s;', this.viewName(change.newView), this.projectionForView(change.newView), this.tableName(change.newView.table));
+      return (0, _util.format)('CREATE VIEW IF NOT EXISTS %s AS SELECT %s FROM %s%s;', this.viewName(change.newView), this.projectionForView(change.newView), this.tableName(change.newView.table), change.newView.clause ? ' ' + change.newView.clause : '');
     }
   }, {
     key: 'createIndex',
