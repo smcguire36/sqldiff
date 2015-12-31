@@ -234,6 +234,8 @@ export default class SchemaDiff {
         }
 
         if (!oldView) {
+          // do a drop for now `ERROR:  cannot change name of view column`
+          this.addChange('drop-view', {oldView: newView});
           this.addChange('create-view', {newView: newView});
         }
       }
@@ -263,7 +265,7 @@ export default class SchemaDiff {
             // The column still exists, but something could've changed about it.
             // If the index changed or anything about the column changed, action needs
             // to be taken.
-            if (oldIndex !== newIndex || !newColumn.column.isEqualTo(oldColumn.column) || newColumn.alias !== oldColumn.alias) {
+            if (oldIndex !== newIndex || newColumn.column.name !== oldColumn.column.name || newColumn.alias !== oldColumn.alias) {
               // column moved within view
               needsRebuild = true;
             }

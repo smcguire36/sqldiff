@@ -65,10 +65,11 @@ export default class Postgres extends SchemaGenerator {
 
   createView(change) {
     const viewName = this.viewName(change.newView);
-    const viewDefinition = this.projectionForView(change.newView);
     const tableName = this.tableName(change.newView.table);
+    const viewDefinition = this.projectionForView(change.newView);
+    const clause = change.newView.clause ? ' ' + change.newView.clause : '';
 
-    return fmt('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s;',
-               viewName, viewDefinition.join(', '), tableName);
+    return fmt('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s%s;',
+               viewName, viewDefinition.join(', '), tableName, clause);
   }
 }

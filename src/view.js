@@ -13,11 +13,7 @@ export default class View {
   }
 
   addColumn(opts) {
-    if (!opts.alias || !opts.column) {
-      throw new Error('must provide alias');
-    }
-
-    this.columns.push({column: opts.column, alias: opts.alias});
+    this.columns.push({column: opts.column, alias: opts.alias, raw: opts.raw});
 
     return this;
   }

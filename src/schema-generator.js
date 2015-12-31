@@ -125,7 +125,11 @@ export default class SchemaGenerator {
     const parts = [];
 
     for (const reference of view.columns) {
-      parts.push(fmt('%s AS %s', this.escape(reference.column.name), this.escape(reference.alias)));
+      if (reference.raw) {
+        parts.push(reference.raw);
+      } else {
+        parts.push(fmt('%s AS %s', this.escape(reference.column.name), this.escape(reference.alias)));
+      }
     }
 
     return parts;
@@ -254,7 +258,7 @@ export default class SchemaGenerator {
   }
 
   viewName(view) {
-    return this.escapedSchema() + this.escape(this.tablePrefix + view.table.name + '_view');
+    return this.escapedSchema() + this.escape(this.tablePrefix + view.name);
   }
 
   indexName(table, columns) {
@@ -266,10 +270,11 @@ export default class SchemaGenerator {
   }
 
   createView(change) {
-    return fmt('CREATE VIEW IF NOT EXISTS %s AS SELECT %s FROM %s;',
+    return fmt('CREATE VIEW IF NOT EXISTS %s AS SELECT %s FROM %s%s;',
                this.viewName(change.newView),
                this.projectionForView(change.newView),
-               this.tableName(change.newView.table));
+               this.tableName(change.newView.table),
+               change.newView.clause ? ' ' + change.newView.clause : '');
   }
 
   createIndex(change) {
