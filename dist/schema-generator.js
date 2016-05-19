@@ -302,18 +302,22 @@ var SchemaGenerator = (function () {
 
       var parts = [];
 
-      parts.push(this.createTable({ newTable: { name: newTemporaryTableName,
+      var append = function append(value) {
+        parts.push.apply(parts, _underscore2.default.isArray(value) ? value : [value]);
+      };
+
+      append(this.createTable({ newTable: { name: newTemporaryTableName,
           columns: change.newTable.columns } }));
 
-      parts.push(this.insertInto({ name: newTemporaryTableName, columns: change.newTable.columns }, change.oldTable));
+      append(this.insertInto({ name: newTemporaryTableName, columns: change.newTable.columns }, change.oldTable));
 
-      parts.push(this.renameTable({ oldTable: { name: oldTableName },
+      append(this.renameTable({ oldTable: { name: oldTableName },
         newTable: { name: oldTemporaryTableName } }));
 
-      parts.push(this.renameTable({ oldTable: { name: newTemporaryTableName },
+      append(this.renameTable({ oldTable: { name: newTemporaryTableName },
         newTable: { name: newTableName } }));
 
-      parts.push(this.dropTable({ oldTable: { name: oldTemporaryTableName } }));
+      append(this.dropTable({ oldTable: { name: oldTemporaryTableName } }));
 
       return parts;
     }
