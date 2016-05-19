@@ -284,7 +284,7 @@ var SchemaGenerator = (function () {
   }, {
     key: 'createTable',
     value: function createTable(change) {
-      return (0, _util.format)('CREATE TABLE IF NOT EXISTS %s (\n%s\n);', this.tableName(change.newTable), this.columnsForTable(change.newTable).join(',\n'));
+      return (0, _util.format)('CREATE TABLE IF NOT EXISTS %s (\n  %s\n);', this.tableName(change.newTable), this.columnsForTable(change.newTable).join(',\n  '));
     }
   }, {
     key: 'raw',
