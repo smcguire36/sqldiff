@@ -181,19 +181,23 @@ export default class SchemaGenerator {
 
     const parts = [];
 
-    parts.push(this.createTable({newTable: {name: newTemporaryTableName,
-                                            columns: change.newTable.columns}}));
+    const append = (value) => {
+      parts.push.apply(parts, _.isArray(value) ? value : [ value ]);
+    };
 
-    parts.push(this.insertInto({name: newTemporaryTableName, columns: change.newTable.columns},
-                               change.oldTable));
+    append(this.createTable({newTable: {name: newTemporaryTableName,
+                                        columns: change.newTable.columns}}));
 
-    parts.push(this.renameTable({oldTable: {name: oldTableName},
-                                 newTable: {name: oldTemporaryTableName}}));
+    append(this.insertInto({name: newTemporaryTableName, columns: change.newTable.columns},
+                            change.oldTable));
 
-    parts.push(this.renameTable({oldTable: {name: newTemporaryTableName},
-                                 newTable: {name: newTableName}}));
+    append(this.renameTable({oldTable: {name: oldTableName},
+                             newTable: {name: oldTemporaryTableName}}));
 
-    parts.push(this.dropTable({oldTable: {name: oldTemporaryTableName}}));
+    append(this.renameTable({oldTable: {name: newTemporaryTableName},
+                             newTable: {name: newTableName}}));
+
+    append(this.dropTable({oldTable: {name: oldTemporaryTableName}}));
 
     return parts;
   }

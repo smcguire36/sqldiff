@@ -46,6 +46,40 @@ export default class Postgres extends SchemaGenerator {
     return fmt('convert_to_float(%s)', columnName);
   }
 
+  primaryKeyName(table) {
+    return this.escape(this.tablePrefix + table.name + '_pkey');
+  }
+
+  primaryKeySequenceName(table) {
+    return this.escape(this.tablePrefix + table.name + '_id_seq');
+  }
+
+  primaryKey(table) {
+    if (table.columns[0].type === 'pk') {
+      return fmt('CONSTRAINT %s PRIMARY KEY (%s)',
+                 this.primaryKeyName(table),
+                 table.columns[0].name);
+    }
+
+    return '';
+  }
+
+  primarySequenceKey(table) {
+    if (table.columns[0].type === 'pk') {
+      return fmt('CONSTRAINT %s PRIMARY KEY (%s)',
+                 this.primaryKeyName(table),
+                 table.columns[0].name);
+    }
+
+    return '';
+  }
+
+  createTable(change) {
+    return fmt('CREATE TABLE IF NOT EXISTS %s (\n  %s\n);',
+               this.tableName(change.newTable),
+               this.columnsForTable(change.newTable).concat(this.primaryKey(change.newTable)).join(',\n  '));
+  }
+
   createIndex(change) {
     const method = change.method || 'btree';
     const indexName = this.indexName(change.newTable, change.columns);
@@ -61,6 +95,21 @@ export default class Postgres extends SchemaGenerator {
     return fmt('DROP TABLE IF EXISTS %s%s CASCADE;',
                this.escapedSchema(),
                this.escape(this.tablePrefix + change.oldTable.name));
+  }
+
+  renameTable(change) {
+    const parts = [ super.renameTable(change) ];
+
+    parts.push(fmt('ALTER TABLE %s RENAME CONSTRAINT %s TO %s;',
+                   this.tableName(change.newTable),
+                   this.primaryKeyName(change.oldTable),
+                   this.primaryKeyName(change.newTable)));
+
+    parts.push(fmt('ALTER SEQUENCE %s RENAME TO %s;',
+                   this.primaryKeySequenceName(change.oldTable),
+                   this.primaryKeySequenceName(change.newTable)));
+
+    return parts;
   }
 
   createView(change) {
