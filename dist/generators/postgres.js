@@ -148,7 +148,7 @@ var Postgres = (function (_SchemaGenerator) {
       var viewDefinition = this.projectionForView(change.newView);
       var clause = change.newView.clause ? ' ' + change.newView.clause : '';
 
-      return (0, _util.format)('CREATE OR REPLACE VIEW %s AS SELECT %s FROM %s%s;', viewName, viewDefinition.join(', '), tableName, clause);
+      return (0, _util.format)('CREATE OR REPLACE VIEW %s AS\nSELECT\n  %s FROM %s%s;', viewName, viewDefinition.join(',\n  '), tableName, clause);
     }
   }]);
 
