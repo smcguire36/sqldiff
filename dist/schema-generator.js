@@ -393,7 +393,7 @@ var SchemaGenerator = (function () {
   }, {
     key: 'createView',
     value: function createView(change) {
-      return (0, _util.format)('CREATE VIEW IF NOT EXISTS %s AS\nSELECT\n  %s FROM %s%s;', this.viewName(change.newView), this.projectionForView(change.newView).join(',\n  '), this.tableName(change.newView.table), change.newView.clause ? ' ' + change.newView.clause : '');
+      return (0, _util.format)('CREATE VIEW IF NOT EXISTS %s AS\nSELECT\n  %s\nFROM %s%s;', this.viewName(change.newView), this.projectionForView(change.newView).join(',\n  '), this.tableName(change.newView.table), change.newView.clause ? ' ' + change.newView.clause : '');
     }
   }, {
     key: 'createIndex',
