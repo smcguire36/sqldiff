@@ -43,7 +43,7 @@ var TYPES = {
   pk: 'bigserial NOT NULL',
   string: 'text',
   integer: 'bigint',
-  date: 'float',
+  date: 'double precision',
   double: 'double precision',
   timestamp: 'timestamp without time zone',
   geometry: 'geometry(Geometry, 4326)',
