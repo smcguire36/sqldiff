@@ -23,7 +23,7 @@ const TYPES = {
   string: 'text',
   integer: 'bigint',
   date: 'float',
-  double: 'float',
+  double: 'double precision',
   timestamp: 'timestamp without time zone',
   geometry: 'geometry(Geometry, 4326)',
   array: 'text[]',
