@@ -26,6 +26,7 @@ const TYPES = {
   double: 'double precision',
   timestamp: 'timestamp without time zone',
   geometry: 'geometry(Geometry, 4326)',
+  json: 'text',
   array: 'text[]',
   boolean: 'boolean',
   fts: 'tsvector'
