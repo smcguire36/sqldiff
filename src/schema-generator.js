@@ -100,7 +100,13 @@ export default class SchemaGenerator {
       return '';
     }
 
-    return '"' + (identifier.replace(/"/g, '""')) + '"';
+    const needsQuotes = /[^_A-Z]/i.test(identifier);
+
+    if (needsQuotes) {
+      return '"' + (identifier.replace(/"/g, '""')) + '"';
+    }
+
+    return identifier;
   }
 
   columnDefinition(column) {

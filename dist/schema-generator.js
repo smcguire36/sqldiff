@@ -167,7 +167,13 @@ var SchemaGenerator = (function () {
         return '';
       }
 
-      return '"' + identifier.replace(/"/g, '""') + '"';
+      var needsQuotes = /[^_A-Z]/i.test(identifier);
+
+      if (needsQuotes) {
+        return '"' + identifier.replace(/"/g, '""') + '"';
+      }
+
+      return identifier;
     }
   }, {
     key: 'columnDefinition',
