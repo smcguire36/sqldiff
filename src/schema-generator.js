@@ -274,9 +274,9 @@ export default class SchemaGenerator {
   }
 
   createView(change) {
-    return fmt('CREATE VIEW IF NOT EXISTS %s AS SELECT %s FROM %s%s;',
+    return fmt('CREATE VIEW IF NOT EXISTS %s AS\nSELECT\n  %s FROM %s%s;',
                this.viewName(change.newView),
-               this.projectionForView(change.newView),
+               this.projectionForView(change.newView).join(',\n  '),
                this.tableName(change.newView.table),
                change.newView.clause ? ' ' + change.newView.clause : '');
   }
