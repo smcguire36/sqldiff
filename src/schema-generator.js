@@ -114,7 +114,17 @@ export default class SchemaGenerator {
   }
 
   columnModifiers(column) {
-    return column.allowNull ? '' : ' NOT NULL';
+    const mods = [];
+
+    if (column.allowNull === false) {
+      mods.push(' NOT NULL');
+    }
+
+    if (column.defaultValue != null) {
+      mods.push(' DEFAULT ' + column.defaultValue);
+    }
+
+    return mods.join('');
   }
 
   columnsForTable(table) {

@@ -183,7 +183,17 @@ var SchemaGenerator = (function () {
   }, {
     key: 'columnModifiers',
     value: function columnModifiers(column) {
-      return column.allowNull ? '' : ' NOT NULL';
+      var mods = [];
+
+      if (column.allowNull === false) {
+        mods.push(' NOT NULL');
+      }
+
+      if (column.defaultValue != null) {
+        mods.push(' DEFAULT ' + column.defaultValue);
+      }
+
+      return mods.join('');
     }
   }, {
     key: 'columnsForTable',
