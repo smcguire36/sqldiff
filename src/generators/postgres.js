@@ -87,9 +87,10 @@ export default class Postgres extends SchemaGenerator {
     const tableName = this.tableName(change.newTable);
     const columns = change.columns.join(', ');
     const unique = change.unique ? 'UNIQUE ' : '';
+    const withClause = method === 'gin' ? ' WITH (fastupdate = off)' : '';
 
-    return fmt('CREATE %sINDEX %s ON %s USING %s (%s);',
-               unique, indexName, tableName, method, columns);
+    return fmt('CREATE %sINDEX %s ON %s USING %s (%s)%s;',
+               unique, indexName, tableName, method, columns, withClause);
   }
 
   dropTable(change) {
