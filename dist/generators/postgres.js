@@ -122,8 +122,9 @@ var Postgres = (function (_SchemaGenerator) {
       var tableName = this.tableName(change.newTable);
       var columns = change.columns.join(', ');
       var unique = change.unique ? 'UNIQUE ' : '';
+      var withClause = method === 'gin' ? ' WITH (fastupdate = off)' : '';
 
-      return (0, _util.format)('CREATE %sINDEX %s ON %s USING %s (%s);', unique, indexName, tableName, method, columns);
+      return (0, _util.format)('CREATE %sINDEX %s ON %s USING %s (%s)%s;', unique, indexName, tableName, method, columns, withClause);
     }
   }, {
     key: 'dropTable',
