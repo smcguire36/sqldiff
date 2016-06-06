@@ -22,16 +22,16 @@ diff: [
 ]
 
 postgres: '''
-CREATE TABLE IF NOT EXISTS "organization_1"."users" (
-  "id" bigserial NOT NULL,
-  "age" bigint,
-  "birth_date" float,
-  "name" text,
-  "address" text,
-  "height" float,
-  "desc" text,
-  "created_at" timestamp without time zone NOT NULL,
-  CONSTRAINT "users_pkey" PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS organization_1.users (
+  id bigserial NOT NULL,
+  age bigint,
+  birth_date date,
+  name text,
+  address text,
+  height double precision,
+  desc text,
+  created_at timestamp without time zone NOT NULL,
+  CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 '''
 

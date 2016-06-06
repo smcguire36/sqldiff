@@ -21,7 +21,7 @@ diff: [
 ]
 
 postgres: '''
-DROP TABLE IF EXISTS "organization_1"."users" CASCADE;
+DROP TABLE IF EXISTS organization_1.users CASCADE;
 '''
 
 sqlite: '''

@@ -17,11 +17,11 @@ diff: [
 ]
 
 postgres: '''
-CREATE TABLE IF NOT EXISTS "organization_1"."users" (
-  "id" bigserial NOT NULL,
-  "age_required" bigint NOT NULL,
-  "age_nrequired" bigint,
-  CONSTRAINT "users_pkey" PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS organization_1.users (
+  id bigserial NOT NULL,
+  age_required bigint NOT NULL,
+  age_nrequired bigint,
+  CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 '''
 

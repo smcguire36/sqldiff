@@ -100,7 +100,8 @@ export default class SchemaGenerator {
       return '';
     }
 
-    const needsQuotes = /[^_A-Z]/i.test(identifier);
+    const needsQuotes = /[^_A-Z0-9]/i.test(identifier) ||
+                        /^[0-9]/.test(identifier);
 
     if (needsQuotes) {
       return '"' + (identifier.replace(/"/g, '""')) + '"';

@@ -25,6 +25,7 @@ var TYPES = {
   string: 'TEXT',
   integer: 'INTEGER',
   date: 'REAL',
+  time: 'REAL',
   double: 'REAL',
   array: 'TEXT',
   json: 'TEXT',

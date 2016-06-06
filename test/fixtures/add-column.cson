@@ -22,8 +22,8 @@ diff: [
 ]
 
 postgres: '''
-ALTER TABLE "organization_1"."users" ADD COLUMN "desc" text;
-ALTER TABLE "organization_1"."users" ADD COLUMN "age" bigint;
+ALTER TABLE organization_1.users ADD COLUMN desc text;
+ALTER TABLE organization_1.users ADD COLUMN age bigint;
 '''
 
 sqlite: '''

@@ -16,10 +16,10 @@ diff: [
 ]
 
 postgres: '''
-CREATE TABLE IF NOT EXISTS "organization_1"."users" (
-  "id" bigserial NOT NULL,
-  "geom" geometry(Geometry, 4326),
-  CONSTRAINT "users_pkey" PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS organization_1.users (
+  id bigserial NOT NULL,
+  geom geometry(Geometry, 4326),
+  CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 '''
 
