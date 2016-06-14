@@ -62,6 +62,8 @@ var SchemaGenerator = (function () {
         return table.id;
       });
 
+      var viewChanges = [];
+
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -75,7 +77,11 @@ var SchemaGenerator = (function () {
           var shouldReplaceWithRecreate = isSimpleChange && _underscore2.default.contains(tablesIdentifiersWithColumnDrops, change.newTable.id);
 
           if (!shouldReplaceWithRecreate) {
-            changes.push(change);
+            if (_underscore2.default.contains(['drop-view', 'create-view'], change.type)) {
+              viewChanges.push(change);
+            } else {
+              changes.push(change);
+            }
           }
         }
       } catch (err) {
@@ -109,6 +115,8 @@ var SchemaGenerator = (function () {
             ids.push(drop.newTable.id);
           }
         }
+
+        // make sure the view changes are always at the end so the tables exist when they're created
       } catch (err) {
         _didIteratorError2 = true;
         _iteratorError2 = err;
@@ -123,6 +131,8 @@ var SchemaGenerator = (function () {
           }
         }
       }
+
+      changes.push.apply(changes, viewChanges);
 
       this.processIndexes(changes);
 
@@ -167,7 +177,7 @@ var SchemaGenerator = (function () {
         return '';
       }
 
-      var needsQuotes = /[^_A-Z]/i.test(identifier);
+      var needsQuotes = /[^_A-Z0-9]/i.test(identifier) || /^[0-9]/.test(identifier);
 
       if (needsQuotes) {
         return '"' + identifier.replace(/"/g, '""') + '"';

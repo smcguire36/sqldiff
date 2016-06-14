@@ -39,13 +39,19 @@ export default class SchemaGenerator {
       return table.id;
     });
 
+    const viewChanges = [];
+
     for (const change of this.changes) {
       const isSimpleChange = _.contains(['add-column', 'drop-column', 'rename-column'], change.type);
 
       const shouldReplaceWithRecreate = isSimpleChange && _.contains(tablesIdentifiersWithColumnDrops, change.newTable.id);
 
       if (!shouldReplaceWithRecreate) {
-        changes.push(change);
+        if (_.contains(['drop-view', 'create-view'], change.type)) {
+          viewChanges.push(change);
+        } else {
+          changes.push(change);
+        }
       }
     }
 
@@ -58,6 +64,9 @@ export default class SchemaGenerator {
         ids.push(drop.newTable.id);
       }
     }
+
+    // make sure the view changes are always at the end so the tables exist when they're created
+    changes.push.apply(changes, viewChanges);
 
     this.processIndexes(changes);
 
