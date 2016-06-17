@@ -139,7 +139,7 @@ var Postgres = (function (_SchemaGenerator) {
 
       parts.push((0, _util.format)('ALTER TABLE %s RENAME CONSTRAINT %s TO %s;', this.tableName(change.newTable), this.primaryKeyName(change.oldTable), this.primaryKeyName(change.newTable)));
 
-      parts.push((0, _util.format)('ALTER SEQUENCE %s RENAME TO %s;', this.primaryKeySequenceName(change.oldTable), this.primaryKeySequenceName(change.newTable)));
+      parts.push((0, _util.format)('ALTER SEQUENCE %s RENAME TO %s;', this.escapedSchema() + this.primaryKeySequenceName(change.oldTable), this.primaryKeySequenceName(change.newTable)));
 
       return parts;
     }
@@ -152,6 +152,15 @@ var Postgres = (function (_SchemaGenerator) {
       var clause = change.newView.clause ? ' ' + change.newView.clause : '';
 
       return (0, _util.format)('CREATE OR REPLACE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;', viewName, viewDefinition.join(',\n  '), tableName, clause);
+    }
+  }, {
+    key: 'insertInto',
+    value: function insertInto(into, from) {
+      var parts = [_get(Object.getPrototypeOf(Postgres.prototype), 'insertInto', this).call(this, into, from)];
+
+      parts.push((0, _util.format)("SELECT setval('%s', (SELECT MAX(id) FROM %s));", this.escapedSchema() + this.primaryKeySequenceName(into), this.tableName(into)));
+
+      return parts;
     }
   }]);
 
