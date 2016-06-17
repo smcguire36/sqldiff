@@ -49,7 +49,7 @@ var TYPES = {
   date: 'date',
   time: 'time without time zone',
   double: 'double precision',
-  timestamp: 'timestamp without time zone',
+  timestamp: 'timestamp with time zone',
   geometry: 'geometry(Geometry, 4326)',
   json: 'text',
   array: 'text[]',

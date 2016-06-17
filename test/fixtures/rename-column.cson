@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS organization_1.tmp_new_users (
   address text,
   height double precision,
   new_desc text,
-  created_at timestamp without time zone NOT NULL,
+  created_at timestamp with time zone NOT NULL,
   CONSTRAINT tmp_new_users_pkey PRIMARY KEY (id)
 );
 INSERT INTO organization_1.tmp_new_users (id, age, birth_date, name, address, height, new_desc, created_at) SELECT id, age, birth_date, name, address, height, desc, created_at FROM organization_1.users;

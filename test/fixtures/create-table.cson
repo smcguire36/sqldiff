@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS organization_1.users (
   address text,
   height double precision,
   desc text,
-  created_at timestamp without time zone NOT NULL,
+  created_at timestamp with time zone NOT NULL,
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 '''
