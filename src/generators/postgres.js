@@ -109,7 +109,7 @@ export default class Postgres extends SchemaGenerator {
                    this.primaryKeyName(change.newTable)));
 
     parts.push(fmt('ALTER SEQUENCE %s RENAME TO %s;',
-                   this.primaryKeySequenceName(change.oldTable),
+                   this.escapedSchema() + this.primaryKeySequenceName(change.oldTable),
                    this.primaryKeySequenceName(change.newTable)));
 
     return parts;
@@ -123,5 +123,15 @@ export default class Postgres extends SchemaGenerator {
 
     return fmt('CREATE OR REPLACE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;',
                viewName, viewDefinition.join(',\n  '), tableName, clause);
+  }
+
+  insertInto(into, from) {
+    const parts = [ super.insertInto(into, from) ];
+
+    parts.push(fmt("SELECT setval('%s', (SELECT MAX(id) FROM %s));",
+                   this.escapedSchema() + this.primaryKeySequenceName(into),
+                   this.tableName(into)));
+
+    return parts;
   }
 }

@@ -43,12 +43,13 @@ CREATE TABLE IF NOT EXISTS organization_1.tmp_new_users (
   CONSTRAINT tmp_new_users_pkey PRIMARY KEY (id)
 );
 INSERT INTO organization_1.tmp_new_users (id, age, birth_date) SELECT id, age, birth_date FROM organization_1.users;
+SELECT setval('organization_1.tmp_new_users_id_seq', (SELECT MAX(id) FROM organization_1.tmp_new_users));
 ALTER TABLE organization_1.users RENAME TO tmp_old_users;
 ALTER TABLE organization_1.tmp_old_users RENAME CONSTRAINT users_pkey TO tmp_old_users_pkey;
-ALTER SEQUENCE users_id_seq RENAME TO tmp_old_users_id_seq;
+ALTER SEQUENCE organization_1.users_id_seq RENAME TO tmp_old_users_id_seq;
 ALTER TABLE organization_1.tmp_new_users RENAME TO users;
 ALTER TABLE organization_1.users RENAME CONSTRAINT tmp_new_users_pkey TO users_pkey;
-ALTER SEQUENCE tmp_new_users_id_seq RENAME TO users_id_seq;
+ALTER SEQUENCE organization_1.tmp_new_users_id_seq RENAME TO users_id_seq;
 DROP TABLE IF EXISTS organization_1.tmp_old_users CASCADE;
 '''
 
