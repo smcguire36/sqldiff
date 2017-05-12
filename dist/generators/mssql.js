@@ -62,11 +62,6 @@ var MSSQL = (function (_SchemaGenerator) {
         if (/_id$/.test(column.name) || column.length != null) {
           return 'varchar(' + (column.length || '100') + ')';
         }
-
-        // TODO(zhm) hacks
-        if (column.name === 'text_value' || column.name === 'key') {
-          return 'varchar(800)';
-        }
       }
 
       return TYPES[column.type] || 'varchar(max)';
