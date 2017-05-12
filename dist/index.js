@@ -20,6 +20,10 @@ var _postgres = require('./generators/postgres');
 
 var _postgres2 = _interopRequireDefault(_postgres);
 
+var _mssql = require('./generators/mssql');
+
+var _mssql2 = _interopRequireDefault(_mssql);
+
 var _schemaDiffer = require('./schema-differ');
 
 var _schemaDiffer2 = _interopRequireDefault(_schemaDiffer);
@@ -35,6 +39,7 @@ exports.default = {
   Table: _table2.default,
   Sqlite: _sqlite2.default,
   Postgres: _postgres2.default,
+  MSSQL: _mssql2.default,
   SchemaDiffer: _schemaDiffer2.default,
   SchemaChange: _schemaChange2.default
 };
