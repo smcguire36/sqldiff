@@ -1,10 +1,10 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _schemaGenerator = require('../schema-generator');
 
@@ -33,13 +33,13 @@ var TYPES = {
   timestamp: 'REAL'
 };
 
-var Sqlite = (function (_SchemaGenerator) {
+var Sqlite = function (_SchemaGenerator) {
   _inherits(Sqlite, _SchemaGenerator);
 
   function Sqlite() {
     _classCallCheck(this, Sqlite);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Sqlite).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Sqlite.__proto__ || Object.getPrototypeOf(Sqlite)).apply(this, arguments));
   }
 
   _createClass(Sqlite, [{
@@ -76,7 +76,7 @@ var Sqlite = (function (_SchemaGenerator) {
   }]);
 
   return Sqlite;
-})(_schemaGenerator2.default);
+}(_schemaGenerator2.default);
 
 exports.default = Sqlite;
 //# sourceMappingURL=sqlite.js.map

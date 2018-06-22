@@ -97,6 +97,10 @@ export default class Postgres extends SchemaGenerator {
                unique, indexName, tableName, method, columns, withClause);
   }
 
+  dropView(change) {
+    return fmt('DROP VIEW IF EXISTS %s CASCADE;', this.viewName(change.oldView));
+  }
+
   dropTable(change) {
     return fmt('DROP TABLE IF EXISTS %s%s CASCADE;',
                this.escapedSchema(),

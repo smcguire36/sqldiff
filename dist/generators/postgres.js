@@ -1,12 +1,12 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 var _schemaGenerator = require('../schema-generator');
 
@@ -57,13 +57,13 @@ var TYPES = {
   fts: 'tsvector'
 };
 
-var Postgres = (function (_SchemaGenerator) {
+var Postgres = function (_SchemaGenerator) {
   _inherits(Postgres, _SchemaGenerator);
 
   function Postgres() {
     _classCallCheck(this, Postgres);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Postgres).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Postgres.__proto__ || Object.getPrototypeOf(Postgres)).apply(this, arguments));
   }
 
   _createClass(Postgres, [{
@@ -131,6 +131,11 @@ var Postgres = (function (_SchemaGenerator) {
       return (0, _util.format)('CREATE %sINDEX %s ON %s USING %s (%s)%s;', unique, indexName, tableName, method, columns, withClause);
     }
   }, {
+    key: 'dropView',
+    value: function dropView(change) {
+      return (0, _util.format)('DROP VIEW IF EXISTS %s CASCADE;', this.viewName(change.oldView));
+    }
+  }, {
     key: 'dropTable',
     value: function dropTable(change) {
       return (0, _util.format)('DROP TABLE IF EXISTS %s%s CASCADE;', this.escapedSchema(), this.escape(this.tablePrefix + change.oldTable.name));
@@ -138,7 +143,7 @@ var Postgres = (function (_SchemaGenerator) {
   }, {
     key: 'renameTable',
     value: function renameTable(change) {
-      var parts = [_get(Object.getPrototypeOf(Postgres.prototype), 'renameTable', this).call(this, change)];
+      var parts = [_get(Postgres.prototype.__proto__ || Object.getPrototypeOf(Postgres.prototype), 'renameTable', this).call(this, change)];
 
       parts.push((0, _util.format)('ALTER TABLE %s RENAME CONSTRAINT %s TO %s;', this.tableName(change.newTable), this.primaryKeyName(change.oldTable), this.primaryKeyName(change.newTable)));
 
@@ -159,7 +164,7 @@ var Postgres = (function (_SchemaGenerator) {
   }, {
     key: 'insertInto',
     value: function insertInto(into, from) {
-      var parts = [_get(Object.getPrototypeOf(Postgres.prototype), 'insertInto', this).call(this, into, from)];
+      var parts = [_get(Postgres.prototype.__proto__ || Object.getPrototypeOf(Postgres.prototype), 'insertInto', this).call(this, into, from)];
 
       parts.push((0, _util.format)("SELECT setval('%s', (SELECT MAX(id) FROM %s));", this.escapedSchema() + this.primaryKeySequenceName(into), this.tableName(into)));
 
@@ -168,7 +173,7 @@ var Postgres = (function (_SchemaGenerator) {
   }]);
 
   return Postgres;
-})(_schemaGenerator2.default);
+}(_schemaGenerator2.default);
 
 exports.default = Postgres;
 //# sourceMappingURL=postgres.js.map
