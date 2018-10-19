@@ -36,38 +36,19 @@ export default class MSSQL extends SchemaGenerator {
   }
 
   transformToText(columnName) {
-    return fmt('CAST(%s AS text)', columnName);
+    return fmt('CAST(%s AS varchar(max))', columnName);
   }
 
   transformToDouble(columnName) {
     return fmt('IIF(ISNUMERIC(%s), %s, NULL)', columnName, columnName);
   }
 
-  createTable(change) {
-    return fmt('CREATE TABLE %s (\n  %s\n);',
+   createTable(change) {
+     return fmt('IF (NOT EXISTS(SELECT COUNT(*) FROM sysobjects WHERE (name=\'%s\')))\nCREATE TABLE %s (\n  %s\n);',
+               this.tableName(change.newTable),
                this.tableName(change.newTable),
                this.columnsForTable(change.newTable).join(',\n  '));
-  }
-
-  createView(change) {
-    let whereClause = '';
-
-    if (change.newView.filter) {
-      const parts = [];
-
-      for (const field of Object.keys(change.newView.filter)) {
-        parts.push(this.escape(field) + " = '" + change.newView.filter[field] + "'");
-      }
-
-      whereClause = ' WHERE ' + parts.join(' AND ');
-    }
-
-    return fmt('CREATE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;',
-               this.viewName(change.newView),
-               this.projectionForView(change.newView).join(',\n  '),
-               this.tableName(change.newView.table),
-               whereClause);
-  }
+   }
 
   createIndex(change) {
     const method = change.method || 'btree';
@@ -89,6 +70,33 @@ export default class MSSQL extends SchemaGenerator {
                this.escape(this.tablePrefix + change.oldTable.name));
   }
 
+  createView(change) {
+    let whereClause = '';
+
+    if (change.newView.filter) {
+      const parts = [];
+
+      for (const field of Object.keys(change.newView.filter)) {
+        parts.push(this.escape(field) + " = '" + change.newView.filter[field] + "'");
+      }
+
+      whereClause = ' WHERE ' + parts.join(' AND ');
+    }
+
+    const parts = [ super.createView(change) ];
+
+    // If the view already exists, drop it first before trying to create it
+    parts.push(fmt('DROP VIEW IF EXISTS %s;\n',
+                this.escape(this.viewName(change.newView))));
+    // Now create the view
+    parts.push(fmt('CREATE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;',
+               this.viewName(change.newView),
+               this.projectionForView(change.newView).join(',\n  '),
+               this.tableName(change.newView.table),
+               whereClause));
+
+    return parts;
+  }
   insertInto(into, from) {
     const parts = [ super.insertInto(into, from) ];
 

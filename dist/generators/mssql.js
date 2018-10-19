@@ -69,7 +69,7 @@ var MSSQL = function (_SchemaGenerator) {
   }, {
     key: 'transformToText',
     value: function transformToText(columnName) {
-      return (0, _util.format)('CAST(%s AS text)', columnName);
+      return (0, _util.format)('CAST(%s AS varchar(max))', columnName);
     }
   }, {
     key: 'transformToDouble',
@@ -79,45 +79,7 @@ var MSSQL = function (_SchemaGenerator) {
   }, {
     key: 'createTable',
     value: function createTable(change) {
-      return (0, _util.format)('CREATE TABLE %s (\n  %s\n);', this.tableName(change.newTable), this.columnsForTable(change.newTable).join(',\n  '));
-    }
-  }, {
-    key: 'createView',
-    value: function createView(change) {
-      var whereClause = '';
-
-      if (change.newView.filter) {
-        var parts = [];
-
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = Object.keys(change.newView.filter)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var field = _step.value;
-
-            parts.push(this.escape(field) + " = '" + change.newView.filter[field] + "'");
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        whereClause = ' WHERE ' + parts.join(' AND ');
-      }
-
-      return (0, _util.format)('CREATE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;', this.viewName(change.newView), this.projectionForView(change.newView).join(',\n  '), this.tableName(change.newView.table), whereClause);
+      return (0, _util.format)('IF (NOT EXISTS(SELECT COUNT(*) FROM sysobjects WHERE (name=\'%s\')))\nCREATE TABLE %s (\n  %s\n);', this.tableName(change.newTable), this.tableName(change.newTable), this.columnsForTable(change.newTable).join(',\n  '));
     }
   }, {
     key: 'createIndex',
@@ -141,6 +103,51 @@ var MSSQL = function (_SchemaGenerator) {
     key: 'dropTable',
     value: function dropTable(change) {
       return (0, _util.format)('DROP TABLE IF EXISTS %s%s;', this.escapedSchema(), this.escape(this.tablePrefix + change.oldTable.name));
+    }
+  }, {
+    key: 'createView',
+    value: function createView(change) {
+      var whereClause = '';
+
+      if (change.newView.filter) {
+        var _parts = [];
+
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = Object.keys(change.newView.filter)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var field = _step.value;
+
+            _parts.push(this.escape(field) + " = '" + change.newView.filter[field] + "'");
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        whereClause = ' WHERE ' + _parts.join(' AND ');
+      }
+
+      var parts = [_get(MSSQL.prototype.__proto__ || Object.getPrototypeOf(MSSQL.prototype), 'createView', this).call(this, change)];
+
+      // If the view already exists, drop it first before trying to create it
+      parts.push((0, _util.format)('DROP VIEW IF EXISTS %s;\n', this.escape(this.viewName(change.newView))));
+      // Now create the view
+      parts.push((0, _util.format)('CREATE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;', this.viewName(change.newView), this.projectionForView(change.newView).join(',\n  '), this.tableName(change.newView.table), whereClause));
+
+      return parts;
     }
   }, {
     key: 'insertInto',
