@@ -79,7 +79,7 @@ var MSSQL = function (_SchemaGenerator) {
   }, {
     key: 'createTable',
     value: function createTable(change) {
-      return (0, _util.format)('IF (NOT EXISTS(SELECT COUNT(*) FROM sysobjects WHERE (name=\'%s\')))\nCREATE TABLE %s (\n  %s\n);', this.tableName(change.newTable), this.tableName(change.newTable), this.columnsForTable(change.newTable).join(',\n  '));
+      return (0, _util.format)('IF (NOT EXISTS(SELECT * FROM sysobjects WHERE (name=\'%s\')))\nCREATE TABLE %s (\n%s\n);', this.tableName(change.newTable).replace(/[\[\]]/g, ''), this.tableName(change.newTable), this.columnsForTable(change.newTable).join(',\n'));
     }
   }, {
     key: 'createIndex',
@@ -103,6 +103,11 @@ var MSSQL = function (_SchemaGenerator) {
     key: 'dropTable',
     value: function dropTable(change) {
       return (0, _util.format)('DROP TABLE IF EXISTS %s%s;', this.escapedSchema(), this.escape(this.tablePrefix + change.oldTable.name));
+    }
+  }, {
+    key: 'renameTable',
+    value: function renameTable(change) {
+      return (0, _util.format)('EXEC sp_rename \'%s\', \'%s\', \'OBJECT\';', this.tableName(change.oldTable).replace(/[\[\]]/g, ''), this.tableName(change.newTable).replace(/[\[\]]/g, ''));
     }
   }, {
     key: 'createView',
@@ -140,10 +145,10 @@ var MSSQL = function (_SchemaGenerator) {
         whereClause = ' WHERE ' + _parts.join(' AND ');
       }
 
-      var parts = [_get(MSSQL.prototype.__proto__ || Object.getPrototypeOf(MSSQL.prototype), 'createView', this).call(this, change)];
+      var parts = [];
 
       // If the view already exists, drop it first before trying to create it
-      parts.push((0, _util.format)('DROP VIEW IF EXISTS %s;\n', this.escape(this.viewName(change.newView))));
+      parts.push((0, _util.format)('DROP VIEW IF EXISTS %s;\n', this.viewName(change.newView)));
       // Now create the view
       parts.push((0, _util.format)('CREATE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;', this.viewName(change.newView), this.projectionForView(change.newView).join(',\n  '), this.tableName(change.newView.table), whereClause));
 
@@ -152,11 +157,14 @@ var MSSQL = function (_SchemaGenerator) {
   }, {
     key: 'insertInto',
     value: function insertInto(into, from) {
-      var parts = [_get(MSSQL.prototype.__proto__ || Object.getPrototypeOf(MSSQL.prototype), 'insertInto', this).call(this, into, from)];
+      var parts = [];
 
-      // parts.push(fmt("SELECT setval('%s', (SELECT MAX(id) FROM %s));",
-      //                this.escapedSchema() + this.primaryKeySequenceName(into),
-      //                this.tableName(into)));
+      // Turn ON Identity Insert
+      parts.push((0, _util.format)('SET IDENTITY_INSERT %s ON;', this.tableName(into)));
+      // Insert Data
+      parts.push(_get(MSSQL.prototype.__proto__ || Object.getPrototypeOf(MSSQL.prototype), 'insertInto', this).call(this, into, from));
+      // Turn OFF Identity Insert
+      parts.push((0, _util.format)('SET IDENTITY_INSERT %s OFF;', this.tableName(into)));
 
       return parts;
     }
