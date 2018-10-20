@@ -12,7 +12,7 @@
     "prepublish": "npm run lint && npm run clean && npm run build",
     "lint": "node_modules/.bin/eslint src",
     "build": "node_modules/.bin/babel src --out-dir dist --source-maps",
-    "clean": "rm -rf dist"
+    "clean": "del /s/f/q dist"
   },
   "author": "Zac McCormick <zac.mccormick@gmail.com> (http://github.com/zhm)",
   "license": "BSD",
