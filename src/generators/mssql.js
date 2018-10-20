@@ -44,10 +44,10 @@ export default class MSSQL extends SchemaGenerator {
   }
 
    createTable(change) {
-     return fmt('IF (NOT EXISTS(SELECT COUNT(*) FROM sysobjects WHERE (name=\'%s\')))\nCREATE TABLE %s (\n  %s\n);',
+     return fmt('IF (NOT EXISTS(SELECT * FROM sysobjects WHERE (name=\'%s\')))\nCREATE TABLE %s (\n%s\n);',
+               this.tableName(change.newTable).replace(/[\[\]]/g, ''),
                this.tableName(change.newTable),
-               this.tableName(change.newTable),
-               this.columnsForTable(change.newTable).join(',\n  '));
+               this.columnsForTable(change.newTable).join(',\n'));
    }
 
   createIndex(change) {
@@ -66,8 +66,14 @@ export default class MSSQL extends SchemaGenerator {
 
   dropTable(change) {
     return fmt('DROP TABLE IF EXISTS %s%s;',
-               this.escapedSchema(),
-               this.escape(this.tablePrefix + change.oldTable.name));
+       this.escapedSchema(),
+       this.escape(this.tablePrefix + change.oldTable.name));
+  }
+
+  renameTable(change) {
+    return fmt('EXEC sp_rename \'%s\', \'%s\', \'OBJECT\';',
+       this.tableName(change.oldTable).replace(/[\[\]]/g, ''),
+       this.tableName(change.newTable).replace(/[\[\]]/g, ''));
   }
 
   createView(change) {
@@ -83,26 +89,30 @@ export default class MSSQL extends SchemaGenerator {
       whereClause = ' WHERE ' + parts.join(' AND ');
     }
 
-    const parts = [ super.createView(change) ];
+    const parts = [];
 
     // If the view already exists, drop it first before trying to create it
     parts.push(fmt('DROP VIEW IF EXISTS %s;\n',
-                this.escape(this.viewName(change.newView))));
+        this.viewName(change.newView)));
     // Now create the view
     parts.push(fmt('CREATE VIEW %s AS\nSELECT\n  %s\nFROM %s%s;',
-               this.viewName(change.newView),
-               this.projectionForView(change.newView).join(',\n  '),
-               this.tableName(change.newView.table),
-               whereClause));
+        this.viewName(change.newView),
+        this.projectionForView(change.newView).join(',\n  '),
+        this.tableName(change.newView.table),
+        whereClause));
 
     return parts;
   }
-  insertInto(into, from) {
-    const parts = [ super.insertInto(into, from) ];
 
-    // parts.push(fmt("SELECT setval('%s', (SELECT MAX(id) FROM %s));",
-    //                this.escapedSchema() + this.primaryKeySequenceName(into),
-    //                this.tableName(into)));
+  insertInto(into, from) {
+    const parts = [];
+
+    // Turn ON Identity Insert
+    parts.push(fmt('SET IDENTITY_INSERT %s ON;', this.tableName(into)));
+    // Insert Data
+    parts.push(super.insertInto(into, from));
+    // Turn OFF Identity Insert
+    parts.push(fmt('SET IDENTITY_INSERT %s OFF;', this.tableName(into)));
 
     return parts;
   }
